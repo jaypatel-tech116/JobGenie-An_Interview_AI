@@ -60,10 +60,10 @@ export const useAuth = () => {
 
       const data = await googleLogin();
 
-      // 🔥 fetch fresh user from backend
-      const freshUser = await getMe();
-
-      setUser(freshUser.user);
+      // Use the user returned directly from /auth/google
+      // instead of a separate getMe() call, which can fail
+      // if the cookie hasn't been set yet in cross-site contexts
+      setUser(data.user);
     } catch (error) {
       if (error.code === "auth/popup-closed-by-user") {
         return; // ✅ silently ignore
