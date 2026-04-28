@@ -185,25 +185,25 @@ async function generateResumePdfController(req, res) {
 
     const { resume, jobDescription, selfDescription } = interviewReport;
 
-    const pdfBuffer = await generateResumePdf({
+    const result = await generateResumePdf({
       resume,
       jobDescription,
       selfDescription,
     });
 
-    // ADD THIS CHECK
-    if (!pdfBuffer || pdfBuffer.length < 100) {
-      throw new Error("Invalid PDF generated");
+    if (result.type === "pdf") {
+      // Puppeteer succeeded — return PDF binary
+      res.set({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`,
+        "Content-Length": result.data.length,
+      });
+      return res.end(result.data);
     }
 
-    // headers
-    res.set({
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `attachment; filename=resume_${interviewReportId}.pdf`,
-      "Content-Length": pdfBuffer.length,
-    });
-
-    return res.end(pdfBuffer);
+    // Fallback — return styled HTML for client-side printing
+    res.set({ "Content-Type": "text/html; charset=utf-8" });
+    return res.send(result.data);
   } catch (err) {
     console.error("Resume PDF Error:", err.message);
 

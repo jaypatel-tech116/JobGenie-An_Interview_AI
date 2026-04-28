@@ -843,9 +843,21 @@ ${jobDescription || "(not provided)"}`;
       let html = extractHTML(raw);
       if (!html) throw new Error("Empty HTML response");
       html = ensureHTML(html);
-      const pdf = await generatePdfFromHtml(html);
-      cache.set(cacheKey, pdf);
-      return pdf;
+
+      // Try PDF generation (may fail on some hosting platforms)
+      try {
+        const pdf = await generatePdfFromHtml(html);
+        if (pdf && pdf.length > 100) {
+          cache.set(cacheKey, { type: "pdf", data: pdf });
+          return { type: "pdf", data: pdf };
+        }
+      } catch (pdfErr) {
+        console.error("⚠️ Puppeteer PDF failed, returning HTML:", pdfErr.message);
+      }
+
+      // Fallback: return HTML for client-side printing
+      cache.set(cacheKey, { type: "html", data: html });
+      return { type: "html", data: html };
     } catch (err) {
       console.error("❌ Provider failed:", err.message);
     }
