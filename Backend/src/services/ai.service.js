@@ -2,7 +2,13 @@ const { GoogleGenAI } = require("@google/genai");
 const axios = require("axios");
 const crypto = require("crypto");
 const NodeCache = require("node-cache");
-const puppeteer = require("puppeteer");
+const puppeteer = require("puppeteer-core");
+let chromium;
+try {
+  chromium = require("@sparticuz/chromium");
+} catch {
+  chromium = null;
+}
 
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_GENAI_API_KEY });
 const cache = new NodeCache({ stdTTL: 3600 });
@@ -448,9 +454,24 @@ function ensureHTML(html) {
 
 // ─── PDF ───────────────────────────────────────────────────────────────────────
 async function generatePdfFromHtml(htmlContent) {
-  const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+  let browser;
+
+  if (chromium) {
+    // Production (Render / serverless) — use @sparticuz/chromium
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: "shell",
+    });
+  } else {
+    // Local dev — use regular puppeteer
+    const puppeteerFull = require("puppeteer");
+    browser = await puppeteerFull.launch({
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
+  }
+
   const page = await browser.newPage();
   // Load Google Fonts over network — keep networkidle0 so fonts render
   await page.setContent(htmlContent, { waitUntil: "networkidle0" });
