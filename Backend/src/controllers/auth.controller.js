@@ -68,6 +68,7 @@ async function registerUserController(req, res) {
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
+      token,
       user: {
         id: user._id,
         username: user.username,
@@ -143,6 +144,7 @@ async function loginUserController(req, res) {
     return res.status(200).json({
       success: true,
       message: "User loggedIn successfully.",
+      token,
       user: {
         id: user._id,
         username: user.username,
@@ -260,6 +262,7 @@ async function googleAuthController(req, res) {
 
     return res.status(200).json({
       success: true,
+      token: appToken,
       user: {
         id: user._id,
         username: user.username,

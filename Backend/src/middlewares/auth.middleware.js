@@ -3,7 +3,10 @@ const tokenBlacklistModel = require("../models/blacklist.model");
 
 async function authUser(req, res, next) {
    try {
-    const token = req.cookies?.token;
+    // Accept token from Authorization header (preferred) or cookie (fallback)
+    const token =
+      req.headers.authorization?.replace("Bearer ", "") ||
+      req.cookies?.token;
 
     if (!token) {
       return res.status(401).json({

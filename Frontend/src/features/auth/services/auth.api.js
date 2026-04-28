@@ -1,11 +1,6 @@
-import axios from "axios";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider } from "../../../config/firebase";
-
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-});
+import api, { setToken, clearToken } from "../../../config/api";
 
 export async function register({ username, email, password }) {
   try {
@@ -14,6 +9,7 @@ export async function register({ username, email, password }) {
       email,
       password,
     });
+    if (response.data.token) setToken(response.data.token);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -27,6 +23,7 @@ export async function login({ email, password }) {
       email,
       password,
     });
+    if (response.data.token) setToken(response.data.token);
     return response.data;
   } catch (error) {
     console.error(error);
@@ -37,8 +34,10 @@ export async function login({ email, password }) {
 export async function logout() {
   try {
     const response = await api.get("/api/auth/logout");
+    clearToken();
     return response.data;
   } catch (error) {
+    clearToken(); // clear locally even if backend call fails
     console.error(error);
     throw error;
   }
@@ -56,6 +55,7 @@ export async function googleLogin() {
       token: idToken,
     });
 
+    if (response.data.token) setToken(response.data.token);
     return response.data;
   } catch (error) {
     console.error(error);
