@@ -29,13 +29,10 @@ const Analyze = () => {
 
     // file validation
     if (resumeFile) {
-      const allowedTypes = [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ];
+      const allowedTypes = ["application/pdf"];
 
       if (!allowedTypes.includes(resumeFile.type)) {
-        alert("Only PDF or DOCX files are allowed.");
+        toast.error("Please upload a PDF file.");
         return;
       }
 
@@ -199,7 +196,7 @@ const Analyze = () => {
                       </svg>
                     </span>
                     <p className="dropzone__title">Click to upload or drag &amp; drop</p>
-                    <p className="dropzone__subtitle">PDF or DOCX (Max 5MB)</p>
+                    <p className="dropzone__subtitle">PDF only (Max 5MB)</p>
                   </>
                 )}
                 <input
@@ -208,10 +205,16 @@ const Analyze = () => {
                   type="file"
                   id="resume"
                   name="resume"
-                  accept=".pdf,.docx"
+                  accept=".pdf"
                   onChange={(e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
+                    if (file.type !== "application/pdf") {
+                      toast.error("Please upload a PDF file.");
+                      e.target.value = "";
+                      setUploadedFileName("");
+                      return;
+                    }
                     if (file.size > 5 * 1024 * 1024) {
                       toast.warning("File exceeds 5MB limit. Please use a smaller file.");
                       e.target.value = "";
