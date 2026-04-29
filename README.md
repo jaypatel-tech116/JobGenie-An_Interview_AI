@@ -155,15 +155,6 @@ graph TD
 
 ---
 
-## 📸 Screenshots
-
-*(Replace these placeholder links with actual screenshots of your application)*
-
-| Dashboard / Report | Resume Analysis |
-| ------------------ | --------------- |
-| <img src="https://via.placeholder.com/600x350/0f0c1a/D4A017?text=JobGenie+Dashboard" alt="Dashboard" /> | <img src="https://via.placeholder.com/600x350/0f0c1a/D4A017?text=AI+Resume+Analysis" alt="Analysis" /> |
-
----
 
 ## 🚀 Getting Started
 
@@ -176,7 +167,7 @@ graph TD
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/jaypatel-tech116/JobGenie.git
+git clone https://github.com/jaypatel-tech116/JobGenie-An_Interview_AI.git
 cd JobGenie
 ```
 
