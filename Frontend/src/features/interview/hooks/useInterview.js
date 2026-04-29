@@ -77,6 +77,12 @@ export const useInterview = () => {
 
   // Download PDF via browser print
   const getResumePdf = async (interviewReportId) => {
+    // Open window synchronously before any await to avoid popup blockers
+    let printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write("<html><head><title>Generating Resume...</title></head><body style='font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;'><h2>Generating your resume, please wait...</h2></body></html>");
+    }
+
     try {
       const blob = await generateResumePdf({ interviewReportId });
 
@@ -87,24 +93,30 @@ export const useInterview = () => {
         throw new Error(errData.message || "PDF generation failed");
       }
 
-      // If we got HTML back, open in new window for print
+      // If we got HTML back, use the print window
       if (blob.type === "text/html" || blob.type?.includes("html")) {
+        if (!printWindow) {
+          throw new Error("Popup blocked! Please allow popups for this site.");
+        }
         const html = await blob.text();
-        const printWindow = window.open("", "_blank");
+        printWindow.document.open();
         printWindow.document.write(html);
         printWindow.document.close();
-        printWindow.onload = () => {
+        
+        // Wait for styles/images to load before printing
+        setTimeout(() => {
           printWindow.print();
-        };
+        }, 500);
         return;
       }
 
       // If we got a PDF blob, download it directly
       if (blob instanceof Blob && blob.size > 100) {
+        if (printWindow) printWindow.close();
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `resume_${interviewReportId}.pdf`;
+        link.download = \`resume_\${interviewReportId}.pdf\`;
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -112,8 +124,10 @@ export const useInterview = () => {
         return;
       }
 
+      if (printWindow) printWindow.close();
       throw new Error("Invalid response received");
     } catch (err) {
+      if (printWindow && !printWindow.closed) printWindow.close();
       console.error("Download error:", err);
       throw err;
     }
