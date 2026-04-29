@@ -82,8 +82,57 @@ export const useInterview = () => {
     if (printWindow) {
       printWindow.document.write(`
         <html>
-          <body style="display:flex;justify-content:center;align-items:center;height:100vh;">
-            <h2>Generating your resume...</h2>
+          <head>
+            <style>
+              body {
+                margin: 0;
+                background: #0f0c1a;
+                color: #f0eaff;
+                font-family: 'DM Sans', sans-serif;
+              }
+              .loading-screen {
+                position: fixed;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 24px;
+              }
+              .loading-spinner {
+                width: 60px;
+                height: 60px;
+                border: 4px solid rgba(124, 58, 237, 0.2);
+                border-top-color: #d4a017;
+                border-right-color: #7c3aed;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+              }
+              h1 {
+                font-size: clamp(1.5rem, 4vw, 2.2rem);
+                margin-top: 24px;
+                background: linear-gradient(135deg, #f5c842 0%, #d4a017 50%, #a07010 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                animation: pulseGlow 2s infinite ease-in-out;
+                font-family: 'Cinzel', serif;
+              }
+              @keyframes spin {
+                to { transform: rotate(360deg); }
+              }
+              @keyframes pulseGlow {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0.7; }
+              }
+            </style>
+          </head>
+          <body>
+            <div class="loading-screen">
+              <div class="loading-spinner"></div>
+              <h1>Generating your resume...</h1>
+            </div>
           </body>
         </html>
       `);
