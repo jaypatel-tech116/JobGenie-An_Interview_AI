@@ -9,6 +9,12 @@
 </p>
 
 <p align="center">
+  <a href="https://jobgenie-interview-ai.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/🚀_Live_Website-Visit_JobGenie-D4A017?style=for-the-badge&logo=vercel" alt="Live Website" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
   <img src="https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
   <img src="https://img.shields.io/badge/Node.js-Express_5-339933?style=for-the-badge&logo=node.js&logoColor=white" />

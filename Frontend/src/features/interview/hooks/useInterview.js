@@ -80,7 +80,13 @@ export const useInterview = () => {
     // Open window synchronously before any await to avoid popup blockers
     let printWindow = window.open("", "_blank");
     if (printWindow) {
-      printWindow.document.write("<html><head><title>Generating Resume...</title></head><body style='font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;'><h2>Generating your resume, please wait...</h2></body></html>");
+      printWindow.document.write(`
+        <html>
+          <body style="display:flex;justify-content:center;align-items:center;height:100vh;">
+            <h2>Generating your resume...</h2>
+          </body>
+        </html>
+      `);
     }
 
     try {
@@ -102,7 +108,7 @@ export const useInterview = () => {
         printWindow.document.open();
         printWindow.document.write(html);
         printWindow.document.close();
-        
+
         // Wait for styles/images to load before printing
         setTimeout(() => {
           printWindow.print();
@@ -116,7 +122,7 @@ export const useInterview = () => {
         const url = window.URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = \`resume_\${interviewReportId}.pdf\`;
+        link.download = `resume_${interviewReportId}.pdf`;
         document.body.appendChild(link);
         link.click();
         link.remove();
