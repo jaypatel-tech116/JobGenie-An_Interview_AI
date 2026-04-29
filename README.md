@@ -34,7 +34,6 @@
 - [✨ Features](#-features)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [🏗️ Architecture](#-architecture)
-- [📸 Screenshots](#-screenshots)
 - [🚀 Getting Started](#-getting-started)
 - [📡 API Reference](#-api-reference)
 - [📁 Project Structure](#-project-structure)
